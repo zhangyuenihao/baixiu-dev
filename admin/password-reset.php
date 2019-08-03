@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <title>Password reset &laquo; Admin</title>
-  <link rel="stylesheet" href="/baixiu-dev/static/assets/vendors/bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" href="/baixiu-dev/static/assets/vendors/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="/baixiu-dev/static/assets/vendors/nprogress/nprogress.css">
-  <link rel="stylesheet" href="/baixiu-dev/static/assets/css/admin.css">
-  <script src="/baixiu-dev/static/assets/vendors/nprogress/nprogress.js"></script>
+  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../static/assets/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="../static/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="../static/assets/css/admin.css">
+  <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
   <script>NProgress.start()</script>
@@ -49,11 +49,11 @@
       </form>
     </div>
   </div>
-
+  <?php $current_page='password-reset'; ?>
   <?php include 'include/sidebar.php';?>
 
-  <script src="/baixiu-dev/static/assets/vendors/jquery/jquery.js"></script>
-  <script src="/baixiu-dev/static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script src="../static/assets/vendors/jquery/jquery.js"></script>
+  <script src="../static/assets/vendors/bootstrap/js/bootstrap.js"></script>
   <script>NProgress.done()</script>
 </body>
 </html>
