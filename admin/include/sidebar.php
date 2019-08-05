@@ -5,6 +5,8 @@
     <title>侧边栏</title>
 </head>
 <body>
+<!--<?php echo $_SERVER['PHP_SELF'];?> 输出/baixiu-dev/admin/index.php可以使用文件路径来代替$current_page-->
+<?php $current_page=isset($current_page)?$current_page:''; ?>
 <div class="aside">
     <div class="profile">
         <img class="avatar" src="../static/uploads/avatar.jpg">
@@ -15,7 +17,7 @@
             <a href="index.php"><i class="fa fa-dashboard"></i>仪表盘</a>
         </li>
         <li <?php echo in_array($current_page, array('posts','post-add','categories'))?'class="active"':''; ?> >
-            <a href="#menu-posts" <?php echo in_array($current_page,array('posts','post-add','categories'))?' aria-expanded="true" ':'class="collapsed" aria-expanded="false"';?> data-toggle="collapse">
+            <a href="#menu-posts" <?php echo in_array($current_page,array('posts','post-add','categories'))?'':'class="collapsed"';?> data-toggle="collapse">
                 <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
             </a>
             <ul id="menu-posts" class="collapse <?php echo in_array($current_page, array('posts','post-add','categories'))?'in':''; ?>">
@@ -31,7 +33,7 @@
             <a href="users.php"><i class="fa fa-users"></i>用户</a>
         </li>
         <li <?php echo in_array($current_page, array('nav-menus','slides','settings'))?'class="active"':''; ?>>
-            <a href="#menu-settings" <?php echo in_array($current_page,array('nav-menus','slides','settings'))?' aria-expanded="true"':'class="collapsed" aria-expanded="false"';?> data-toggle="collapse">
+            <a href="#menu-settings" <?php echo in_array($current_page,array('nav-menus','slides','settings'))?'':'class="collapsed"';?> data-toggle="collapse">
                 <i class="fa fa-cogs"></i>设置<i class="fa fa-angle-right"></i>
             </a>
             <ul id="menu-settings" class="collapse <?php echo in_array($current_page, array('nav-menus','slides','settings'))?'in':''; ?>">
