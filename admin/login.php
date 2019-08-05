@@ -44,10 +44,11 @@ if(!$user){
 $GLOBALS['message']='用户名不存在';
 return;
 }
-if($user['password']!==$password){
-$GLOBALS['message']='用户明与密码不匹配';
+if($user['password']!==md5($password)){
+$GLOBALS['message']='用户名账号不匹配';
 return;
 }
+
 header('location:index.php');
 }
 //判断是否是post请求
