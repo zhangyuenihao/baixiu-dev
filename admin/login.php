@@ -1,3 +1,15 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Sign in &laquo; Admin</title>
+  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../static/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="../static/assets/css/admin.css">
+  <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
 <?php
     //载入配置文件
     require_once '../config.php';
@@ -51,16 +63,6 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 login();
 }
 ?>
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <title>Sign in &laquo; Admin</title>
-  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" href="../static/assets/css/admin.css">
-</head>
-<body>
-
   <div class="login">
     <!--可以在form上添加novalidate取消浏览器自带的效验功能-->
     <form class="login-wrap" action="<?php echo $_SERVER['PHP_SELF']?>" method="post" novalidate>
@@ -91,12 +93,25 @@ login();
     //实现：
     //时机:邮箱文本框失去焦点，并且能够拿到文本框填写的邮箱是
     //事情：获取文本框头像，展示到img
-    let emailFormat=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]$/;
+    let emailFormat=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
+    let imgsrc=$('.avatar').attr('src');
     $('#email').on('blur',function () {
        let value=$(this).val();
        //如果邮箱为空，或者格式不正确则返回
-       if(!value||emailFormat.test(value)) return
-
+       if(!value||!emailFormat.test(value)){
+         console.log(value)
+         $('.avatar').fadeOut(function () {
+           $(this).fadeIn();
+         }).attr('src',imgsrc);
+       }
+       //通过ajax请求
+      $.get('api/avatar.php',{email:value},function (res) {
+        if(!res) return
+        $('.avatar').fadeOut(function () {
+         console.log(res)
+          $(this).fadeIn();
+        }).attr('src','..'+res);
+      })
 
     })
   })
