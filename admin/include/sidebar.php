@@ -6,11 +6,16 @@
 </head>
 <body>
 <!--<?php echo $_SERVER['PHP_SELF'];?> 输出/baixiu-dev/admin/index.php可以使用文件路径来代替$current_page-->
-<?php $current_page=isset($current_page)?$current_page:''; ?>
+<?php
+$current_page=isset($current_page)?$current_page:'';
+session_start();
+$current_user=$_SESSION['current_login_user'];
+?>
 <div class="aside">
     <div class="profile">
-        <img class="avatar" src="../static/uploads/avatar.jpg">
-        <h3 class="name">布头儿</h3>
+        <!---->
+        <img class="avatar" src=<?php echo isset($current_user['avatar'])?'..'.$current_user['avatar']:'../static/assets/img/default.png';?>>
+        <h3 class="name"><?php echo $current_user['nickname'];?></h3>
     </div>
     <ul class="nav">
         <li <?php echo $current_page==='index'?'class="active"':''; ?>>
