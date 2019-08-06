@@ -1,16 +1,8 @@
-
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <title>Sign in &laquo; Admin</title>
-  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" href="../static/assets/css/admin.css">
-</head>
-<body>
 <?php
     //载入配置文件
     require_once '../config.php';
+    //给用户找一个箱子(session)如果你之前有就用之前的，没有就给个新的
+      session_start();
    //检测
    function login(){
    //1.接收并效验
@@ -44,18 +36,31 @@ if(!$user){
 $GLOBALS['message']='用户名不存在';
 return;
 }
-if($user['password']!==md5($password)){
-$GLOBALS['message']='用户名账号不匹配';
-return;
-}
-
+if($user['password']==md5($password)){
+//用户名密码正确，通过Cookie保存用户的登录状态
+//存一个登录标识
+$_SESSION['current_login_user']=$user;
 header('location:index.php');
+exit;
+}
+$GLOBALS['message']='用户名账号不匹配';
+
 }
 //判断是否是post请求
 if($_SERVER['REQUEST_METHOD']==='POST'){
 login();
 }
 ?>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Sign in &laquo; Admin</title>
+  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../static/assets/css/admin.css">
+</head>
+<body>
+
   <div class="login">
     <!--可以在form上添加novalidate取消浏览器自带的效验功能-->
     <form class="login-wrap" action="<?php echo $_SERVER['PHP_SELF']?>" method="post" novalidate>
@@ -77,5 +82,25 @@ login();
       <button class="btn btn-primary btn-block">登 录</button>
     </form>
   </div>
+<script src="../static/assets/vendors/jquery/jquery.js"></script>
+<script>
+  $(function($) {
+   //单独作用域
+    //确保页面加载过后执行
+    //目标：在用户输入自己的邮箱后显示对应头像
+    //实现：
+    //时机:邮箱文本框失去焦点，并且能够拿到文本框填写的邮箱是
+    //事情：获取文本框头像，展示到img
+    let emailFormat=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]$/;
+    $('#email').on('blur',function () {
+       let value=$(this).val();
+       //如果邮箱为空，或者格式不正确则返回
+       if(!value||emailFormat.test(value)) return
+
+
+    })
+  })
+
+</script>
 </body>
 </html>

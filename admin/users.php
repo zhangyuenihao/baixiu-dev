@@ -10,6 +10,7 @@
   <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
+<?php include 'include/loginstatus.php'?><?php include 'include/loginstatus.php'?>
   <script>NProgress.start()</script>
 
   <div class="main">
