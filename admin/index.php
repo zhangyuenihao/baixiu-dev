@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="../static/assets/css/admin.css">
     <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
 </head>
-<?php include 'include/loginstatus.php'?>
+<?php
+//echo dirname(__FILE__);
+ require_once '../functions.php';
+$current_user=bx_get_current_user();
+?>
 <script>NProgress.start()</script>
 
 <div class="main">

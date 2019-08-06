@@ -31,7 +31,7 @@
          $GLOBALS['message']='请填密码';
          return;
        }
-       $conn=mysqli_connect(DB_HOST,DB_USER,DB_PASS,DB_NAME);
+       $conn=mysqli_connect(BX_DB_HOST,BX_DB_USER,BX_DB_PASS,BX_DB_NAME);
        if(!$conn){
          exit('<h1>连接数据库失败</h1>');
 }

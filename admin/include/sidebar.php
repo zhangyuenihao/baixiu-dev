@@ -7,9 +7,12 @@
 <body>
 <!--<?php echo $_SERVER['PHP_SELF'];?> 输出/baixiu-dev/admin/index.php可以使用文件路径来代替$current_page-->
 <?php
+
+//require require_once include_once include相当于直接把文件放到使用的目录
+require_once '../functions.php';
 $current_page=isset($current_page)?$current_page:'';
-session_start();
-$current_user=$_SESSION['current_login_user'];
+//判断用户是否登录一定是最先去做
+$current_user=bx_get_current_user();
 ?>
 <div class="aside">
     <div class="profile">
