@@ -100,7 +100,6 @@ login();
        let value=$(this).val();
        //如果邮箱为空，或者格式不正确则返回
        if(!value||!emailFormat.test(value)){
-         console.log(value)
          $('.avatar').fadeOut(function () {
            $(this).fadeIn();
          }).attr('src',imgsrc);
@@ -109,7 +108,6 @@ login();
       $.get('api/avatar.php',{email:value},function (res) {
         if(!res) return
         $('.avatar').fadeOut(function () {
-         console.log(res)
           $(this).fadeIn();
         }).attr('src','..'+res);
       })

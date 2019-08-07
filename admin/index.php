@@ -107,7 +107,7 @@ mysqli_close($conn);
                 },
 
                 data:[
-                    {value:<?php echo $posts_count;?>, name:'文章', selected:true},
+                    {value:<?php echo $posts_count;?>, name:'文章'},
                     {value:<?php echo $categories_count;?>, name:'分类'},
                     {value:<?php echo $comments_count;?>, name:'评论'}
                 ]
