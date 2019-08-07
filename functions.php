@@ -1,4 +1,7 @@
 <?php
+
+ require_once '../config.php';
+
  /**
  *封装公共函数
  **/
@@ -15,4 +18,37 @@ function bx_get_current_user(){
     }
     return $_SESSION['current_login_user'];
 }
+/**
+*通过数据库查询获取多条数据
+*=>关联数组
+**/
+function bx_fetch_all($sql){
 
+ //连接数据库
+ $conn=mysqli_connect(BX_DB_HOST,BX_DB_USER,BX_DB_PASS,BX_DB_NAME);
+ if(!$conn){
+ exit('连接数据库失败');
+ }
+
+ $query=mysqli_query($conn,$sql);
+ if(!$query){
+  return false;
+ }
+ //获取数据
+ while($row=mysqli_fetch_assoc($query)){
+ $result[]=$row;
+ }
+ mysqli_free_result($query);
+ mysqli_close($conn);
+ return $result;
+}
+/**
+*通过数据库查询获取单条数据
+**/
+function bx_fetch_one($sql){
+ $res=bx_fetch_all($sql);
+ return isset($res[0])?$res[0]:null;
+}
+/**
+*
+**/

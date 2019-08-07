@@ -63,6 +63,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 login();
 }
 ?>
+  <script>NProgress.start()</script>
   <div class="login">
     <!--可以在form上添加novalidate取消浏览器自带的效验功能-->
     <form class="login-wrap" action="<?php echo $_SERVER['PHP_SELF']?>" method="post" novalidate>
@@ -115,7 +116,7 @@ login();
 
     })
   })
-
+  NProgress.done()
 </script>
 </body>
 </html>
