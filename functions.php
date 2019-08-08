@@ -1,4 +1,5 @@
 <?php
+//为了避免乱码charset=utf-8
 header('content-type: text/html; charset=utf-8');
  require_once '../config.php';
 

@@ -1,27 +1,63 @@
 <?php
    require_once '../functions.php';
    $current_user=bx_get_current_user();
+    //判断是否为需要编辑的数据
+    //====================================
+        if(!empty($_GET['id'])){
+         //取非意味着$_GET['id']不为空
+         //编辑数据时url传了一个id
+          $current_edit_category=bx_fetch_one('select * from categories where id='.$_GET['id']);
+          var_dump($current_edit_category);
+        }
+
+   //添加数据
    function add_category(){
        if(empty($_POST['name'])||empty($_POST['slug'])){
        $GLOBALS['success']=false;
          $GLOBALS['message']='请完整填写表单';
          return;
-       }
+        }
        $name=$_POST['name'];
        $slug=$_POST['slug'];
        $rows=bx_execute("insert into categories values(null,'{$slug}','{$name}')");
        //如果有返回数据
        $GLOBALS['success']=$rows>0;
-$GLOBALS['message']=$rows<=0?'添加失败!':'添加成功!';
-}
+        $GLOBALS['message']=$rows<=0?'添加失败!':'添加成功!';
+   }
+   //编辑数据
+    function edit_category(){
+     global $current_edit_category;
+    //接收并保存
+   $id=$current_edit_category['id'];
+    $name=empty($_POST['name'])?$current_edit_category['name']:$_POST['name'];
+//同步更新
+$current_edit_category['name']=$name;
+    $slug=empty($_POST['slug'])?$current_edit_category['slug']:$_POST['slug'];
+$current_edit_category['slug']=$slug;
+    //更新
+    $rows=bx_execute("update categories set slug='{$slug}',name='{$name}' where id={$id}");
+    //如果有返回数据
+    $GLOBALS['success']=$rows>0;
+    $GLOBALS['message']=$rows<=0?'更新失败!':'更新成功!';
+    }
 
-//如果有修改操作与查询操作一起，一定要先做修改，再查询
-//效验是否是post请求再做操作
-if($_SERVER['REQUEST_METHOD']==='POST'){
-//一旦表单提交就意味着添加数据
+   //如果有修改操作与查询操作一起，一定要先做修改，再查询
+   //效验是否是post请求再做操作，添加数据
+        if($_SERVER['REQUEST_METHOD']==='POST'){
+            //一旦表单提交就意味着添加数据
+            //如果有修改get到的值则进行修改操作，如果没有则进行添加操作
+            if(isset($current_edit_category)){
+edit_category();
+}else{
 add_category();
 }
-$categories=bx_fetch_all('select * from categories');
+
+        }
+
+    //查询数据
+        $categories=bx_fetch_all('select * from categories');
+
+
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -60,6 +96,23 @@ $categories=bx_fetch_all('select * from categories');
       <?php endif;?>
       <div class="row">
         <div class="col-md-4">
+            <?php if(isset($current_edit_category)):?>
+            <form action="<?php echo $_SERVER['PHP_SELF'];?>?id=<?php echo $current_edit_category['id']; ?>" method="post">
+                <h2>编辑《<?php echo $current_edit_category['name']; ?>》</h2>
+                <div class="form-group">
+                    <label for="name">名称</label>
+                    <input id="name" class="form-control" name="name" type="text" placeholder="<?php echo $current_edit_category['name']; ?>">
+                </div>
+                <div class="form-group">
+                    <label for="slug">别名</label>
+                    <input id="slug" class="form-control" name="slug" type="text" placeholder="<?php echo $current_edit_category['slug']; ?>">
+                    <p class="help-block">https://zce.me/category/<strong>slug</strong></p>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+            </form>
+            <?php else: ?>
           <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
             <h2>添加新分类目录</h2>
             <div class="form-group">
@@ -75,6 +128,7 @@ $categories=bx_fetch_all('select * from categories');
               <button class="btn btn-primary" type="submit">添加</button>
             </div>
           </form>
+            <?php endif; ?>
         </div>
         <div class="col-md-8">
           <div class="page-action">
@@ -97,7 +151,7 @@ $categories=bx_fetch_all('select * from categories');
               <td><?php echo $item['name'];?></td>
               <td><?php echo $item['slug'];?></td>
               <td class="text-center">
-                <a href="javascript:;" class="btn btn-info btn-xs">编辑</a>
+                <a href="<?php echo $_SERVER['PHP_SELF'];?>?id=<?php echo $item['id']; ?>" class="btn btn-info btn-xs">编辑</a>
                 <a href="category_delete.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-xs">删除</a>
               </td>
             </tr>
