@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <title>Categories &laquo; Admin</title>
-  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" href="../static/assets/vendors/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="../static/assets/vendors/nprogress/nprogress.css">
-  <link rel="stylesheet" href="../static/assets/css/admin.css">
-  <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
-</head>
-<body>
-
 <?php
    require_once '../functions.php';
    $current_user=bx_get_current_user();
@@ -25,17 +12,30 @@
        $rows=bx_execute("insert into categories values(null,'{$slug}','{$name}')");
        //如果有返回数据
        $GLOBALS['success']=$rows>0;
-       $GLOBALS['message']=$rows<=0?'添加失败!':'添加成功!';
+$GLOBALS['message']=$rows<=0?'添加失败!':'添加成功!';
 }
 
-   //如果有修改操作与查询操作一起，一定要先做修改，再查询
-   //效验是否是post请求再做操作
-   if($_SERVER['REQUEST_METHOD']==='POST'){
-   //一旦表单提交就意味着添加数据
-   add_category();
-   }
-   $categories=bx_fetch_all('select * from categories');
+//如果有修改操作与查询操作一起，一定要先做修改，再查询
+//效验是否是post请求再做操作
+if($_SERVER['REQUEST_METHOD']==='POST'){
+//一旦表单提交就意味着添加数据
+add_category();
+}
+$categories=bx_fetch_all('select * from categories');
 ?>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Categories &laquo; Admin</title>
+  <link rel="stylesheet" href="../static/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="../static/assets/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="../static/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="../static/assets/css/admin.css">
+  <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+
   <script>NProgress.start()</script>
 
   <div class="main">
@@ -79,7 +79,7 @@
         <div class="col-md-8">
           <div class="page-action">
             <!-- show when multiple checked -->
-            <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+            <a class="btn btn-danger btn-sm" href="category_delete.php" style="display: none" id="btn_delete">批量删除</a>
           </div>
           <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -93,12 +93,12 @@
             <tbody>
             <?php foreach($categories as $item):?>
             <tr>
-              <td class="text-center"><input type="checkbox"></td>
+              <td class="text-center"><input type="checkbox" data-id=<?php echo $item['id']; ?> ></td>
               <td><?php echo $item['name'];?></td>
               <td><?php echo $item['slug'];?></td>
               <td class="text-center">
                 <a href="javascript:;" class="btn btn-info btn-xs">编辑</a>
-                <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+                <a href="category_delete.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-xs">删除</a>
               </td>
             </tr>
             <?php endforeach;?>
@@ -113,6 +113,40 @@
 
   <script src="../static/assets/vendors/jquery/jquery.js"></script>
   <script src="../static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script>
+    $(function ($) {
+      let $tbodyCheckbox=$('tbody input');
+      let $btnDelete=$('#btn_delete');
+      let allCheckeds=[]
+      $tbodyCheckbox.on('change',function () {
+        //$(this).attr('data-id')
+        //$(this).data('id')
+        //dom写法 this.dateset['id']
+        let id=$(this).data('id')
+          if($(this).prop('checked')){
+            allCheckeds.push(id);
+          }else{
+            //如果选中则放入，否则取出
+            allCheckeds.splice(allCheckeds.indexOf(id),1)
+          }
+        allCheckeds.length?$btnDelete.fadeIn():$btnDelete.fadeOut();
+          $btnDelete.prop('search','?id='+allCheckeds);
+
+      })
+      //version1===========================================
+      /*$tbodyCheckbox.on('change',function () {
+        //有任意一个选中则显示。反之隐藏
+        let flag=false;
+        $tbodyCheckbox.each(function (i,item) {
+          //prop获取元素dom属性 checked的属性为false或true
+          if($(item).prop('checked')){
+            flag=true;
+          }
+        })
+        flag?$btnDelete.fadeIn():$btnDelete.fadeOut();
+      })*/
+    })
+  </script>
   <script>NProgress.done()</script>
 </body>
 </html>

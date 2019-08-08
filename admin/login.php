@@ -12,6 +12,7 @@
 <body>
 <?php
     //载入配置文件
+    header('content-type: text/html; charset=utf-8');
     require_once '../config.php';
     //给用户找一个箱子(session)如果你之前有就用之前的，没有就给个新的
       session_start();
