@@ -26,19 +26,19 @@
    }
    //编辑数据
     function edit_category(){
-     global $current_edit_category;
-    //接收并保存
-   $id=$current_edit_category['id'];
-    $name=empty($_POST['name'])?$current_edit_category['name']:$_POST['name'];
-//同步更新
-$current_edit_category['name']=$name;
-    $slug=empty($_POST['slug'])?$current_edit_category['slug']:$_POST['slug'];
-$current_edit_category['slug']=$slug;
-    //更新
-    $rows=bx_execute("update categories set slug='{$slug}',name='{$name}' where id={$id}");
-    //如果有返回数据
-    $GLOBALS['success']=$rows>0;
-    $GLOBALS['message']=$rows<=0?'更新失败!':'更新成功!';
+        global $current_edit_category;
+        //接收并保存
+        $id=$current_edit_category['id'];
+        $name=empty($_POST['name'])?$current_edit_category['name']:$_POST['name'];
+        //同步更新
+        $current_edit_category['name']=$name;
+        $slug=empty($_POST['slug'])?$current_edit_category['slug']:$_POST['slug'];
+        $current_edit_category['slug']=$slug;
+        //更新
+        $rows=bx_execute("update categories set slug='{$slug}',name='{$name}' where id={$id}");
+        //如果有返回数据
+        $GLOBALS['success']=$rows>0;
+        $GLOBALS['message']=$rows<=0?'更新失败!':'更新成功!';
     }
 
    //如果有修改操作与查询操作一起，一定要先做修改，再查询
@@ -54,8 +54,6 @@ $current_edit_category['slug']=$slug;
     }
     //查询数据
         $categories=bx_fetch_all('select * from categories');
-
-
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -74,7 +72,7 @@ $current_edit_category['slug']=$slug;
 
   <div class="main">
     <?php include 'include/navbar.php';?>
-    <div class="container-fluid">
+     <div class="container-fluid">
       <div class="page-title">
         <h1>分类目录</h1>
       </div>

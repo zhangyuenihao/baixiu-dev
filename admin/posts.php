@@ -1,16 +1,31 @@
 <?php
   require_once '../functions.php';
-  $posts=bx_fetch_all('select * from posts');
+   //posts关联users categories查询
+  $posts=bx_fetch_all('select posts.id,posts.title,users.nickname as user_name,categories.name as category_name,posts.created,posts.status
+  from posts
+  inner join users on posts.user_id=users.id
+  inner join categories on posts.category_id=categories.id');
   var_dump($posts);
   //处理数据格式转换
+  //状态转换
     function convert_status($status){
-     $dict=array(
-     'published'=>'已发布',
-      'drafted'=>'草稿',
-      'trashed'=>'回收站'
-     );
-    return isset($dict[$status])?$dict[$status]:'未知';
+         $dict=array(
+         'published'=>'已发布',
+          'drafted'=>'草稿',
+          'trashed'=>'回收站'
+         );
+        return isset($dict[$status])?$dict[$status]:'未知';
     }
+    //时间转换
+    function convert_date($created){
+        date_default_timezone_set("PRC");
+        //时间戳
+        $timestamp=strtotime($created);
+        return date('Y年m月d日<b\r> H:i:s',$timestamp);
+    }
+
+
+
 ?>
 
 
@@ -78,9 +93,9 @@
            <tr>
              <td class="text-center"><input type="checkbox"></td>
              <td><?php echo $item['title'];?></td>
-             <td><?php echo $item['user_id'];?></td>
-             <td><?php echo $item['category_id'];?></td>
-             <td class="text-center"><?php echo $item['created'];?></td>
+             <td><?php echo $item['user_name'];?></td>
+             <td><?php echo $item['category_name'];?></td>
+             <td class="text-center"><?php echo convert_date($item['created']);?></td>
              <td class="text-center"><?php echo convert_status($item['status']);?></td>
              <td class="text-center">
                <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
