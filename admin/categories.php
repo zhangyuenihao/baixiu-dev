@@ -47,13 +47,11 @@ $current_edit_category['slug']=$slug;
             //一旦表单提交就意味着添加数据
             //如果有修改get到的值则进行修改操作，如果没有则进行添加操作
             if(isset($current_edit_category)){
-edit_category();
-}else{
-add_category();
-}
-
+        edit_category();
+        }else{
+        add_category();
         }
-
+    }
     //查询数据
         $categories=bx_fetch_all('select * from categories');
 
@@ -178,7 +176,8 @@ add_category();
         //dom写法 this.dateset['id']
         let id=$(this).data('id')
           if($(this).prop('checked')){
-            allCheckeds.push(id);
+              //allCheckeds.indexOf(id)===-1||allCheckeds.push(id);
+              allCheckeds.includes(id)||allCheckeds.push(id);
           }else{
             //如果选中则放入，否则取出
             allCheckeds.splice(allCheckeds.indexOf(id),1)
@@ -199,6 +198,15 @@ add_category();
         })
         flag?$btnDelete.fadeIn():$btnDelete.fadeOut();
       })*/
+        //全选和全不选
+        //当该按钮发生改变时做一些事
+        $('thead input').on('change',function () {
+            //获取当前选中状态
+            let checked=$(this).prop('checked');
+            //设置给tbody中的每一个checked
+            $tbodyCheckbox.prop('checked',checked).trigger('change');
+        })
+
     })
   </script>
   <script>NProgress.done()</script>

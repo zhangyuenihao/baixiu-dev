@@ -63,6 +63,11 @@ $GLOBALS['message']='用户名账号不匹配';
 if($_SERVER['REQUEST_METHOD']==='POST'){
 login();
 }
+//退出功能
+if($_SERVER['REQUEST_METHOD']==='GET'&&isset($_GET['action'])&&$_GET['action']==='logout'){
+//删除登录标识
+unset($_SESSION['current_login_user']);
+}
 ?>
   <script>NProgress.start()</script>
   <div class="login">
