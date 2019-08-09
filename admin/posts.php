@@ -1,3 +1,19 @@
+<?php
+  require_once '../functions.php';
+  $posts=bx_fetch_all('select * from posts');
+  var_dump($posts);
+  //处理数据格式转换
+    function convert_status($status){
+     $dict=array(
+     'published'=>'已发布',
+      'drafted'=>'草稿',
+      'trashed'=>'回收站'
+     );
+    return isset($dict[$status])?$dict[$status]:'未知';
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -10,9 +26,7 @@
   <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
-<?php include 'include/loginstatus.php'?>
   <script>NProgress.start()</script>
-
   <div class="main">
     <?php include 'include/navbar.php';?>
     <div class="container-fluid">
@@ -60,42 +74,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="text-center"><input type="checkbox"></td>
-            <td>随便一个名称</td>
-            <td>小小</td>
-            <td>潮科技</td>
-            <td class="text-center">2016/10/07</td>
-            <td class="text-center">已发布</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-center"><input type="checkbox"></td>
-            <td>随便一个名称</td>
-            <td>小小</td>
-            <td>潮科技</td>
-            <td class="text-center">2016/10/07</td>
-            <td class="text-center">已发布</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-center"><input type="checkbox"></td>
-            <td>随便一个名称</td>
-            <td>小小</td>
-            <td>潮科技</td>
-            <td class="text-center">2016/10/07</td>
-            <td class="text-center">已发布</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
+         <?php foreach($posts as $item):?>
+           <tr>
+             <td class="text-center"><input type="checkbox"></td>
+             <td><?php echo $item['title'];?></td>
+             <td><?php echo $item['user_id'];?></td>
+             <td><?php echo $item['category_id'];?></td>
+             <td class="text-center"><?php echo $item['created'];?></td>
+             <td class="text-center"><?php echo convert_status($item['status']);?></td>
+             <td class="text-center">
+               <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
+               <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+             </td>
+           </tr>
+
+         <?php endforeach; ?>
         </tbody>
       </table>
     </div>
