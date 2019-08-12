@@ -1,11 +1,42 @@
 <?php
   require_once '../functions.php';
+  //获取当前用户登录信息
+  $current_user=bx_get_current_user();
+  //页码查询
+  $size=20;
+  $total_count=bx_fetch_one("select count(1) as count
+                from posts
+                inner join users on posts.user_id=users.id
+                inner join categories on posts.category_id=categories.id
+                ")['count'];
+  $total_page=ceil($total_count/$size);
+  var_dump($total_page);
+  $page=empty($_GET['page'])?1:(int)$_GET['page'];
+  $page=$page<=0?1:$page;
+  $page=$page>=$total_page?$total_page:$page;
+
+  //偏移量
+  $offset=(int)($page-1)*$size;
+  //处理分页页码
+  //
+  $visables=5;
+  $region=floor($visables/2);
+  $begin=$page-$region;
+  $begin=$begin<1?1:$begin;
+  $end=$begin+$visables-1;
+  $end=$end>$total_page?$total_page:$end;
+  $begin=$end-$visables+1;
+  $begin=$begin<1?1:$begin;
+var_dump($begin);
    //posts关联users categories查询
-  $posts=bx_fetch_all('select posts.id,posts.title,users.nickname as user_name,categories.name as category_name,posts.created,posts.status
+  $posts=bx_fetch_all("select posts.id,posts.title,users.nickname as user_name,categories.name as category_name,posts.created,posts.status
   from posts
   inner join users on posts.user_id=users.id
-  inner join categories on posts.category_id=categories.id');
-  var_dump($posts);
+  inner join categories on posts.category_id=categories.id
+  order by posts.created desc
+  limit {$offset},{$size};
+  ");
+ //var_dump($posts);
   //处理数据格式转换
   //状态转换
     function convert_status($status){
@@ -69,11 +100,23 @@
           <button class="btn btn-default btn-sm">筛选</button>
         </form>
         <ul class="pagination pagination-sm pull-right">
-          <li><a href="#">上一页</a></li>
-          <li><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">下一页</a></li>
+        <?php if($page-1>0):?>
+        <li><a href="?page=<?php echo $page-1;?>">&laquo;上一页</a></li>
+        <?php endif;?>
+
+        <?php if($begin>1):?>
+        <li><a href="?page=<?php echo $begin-1;?>">&hellip;</a></li>
+        <?php endif;?>
+        <?php for($i=$begin;$i<=$end;$i++):?>
+            <li <?php echo $i==$page?'class="active"':'';?>><a href="?page=<?php echo $i?>"><?php echo $i;?></a></li>
+        <?php endfor;?>
+             <?php if($end<$total_page):?>
+                <li><a href="?page=<?php echo $end+1;?>">&hellip;</a></li>
+                <?php endif;?>
+        <?php if($page<$total_page):?>
+        <li><a href="?page=<?php echo $page+1;?>">下一页&raquo;</a></li>
+        <?php endif;?>
+
         </ul>
       </div>
       <table class="table table-striped table-bordered table-hover">
