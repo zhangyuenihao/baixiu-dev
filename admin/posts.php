@@ -103,7 +103,7 @@
             <option value="all" <?php echo isset($_GET['status'])&&$_GET['status']=='all'?'selected':'';?>>所有状态</option>
             <option value="drafted" <?php echo isset($_GET['status'])&&$_GET['status']=='drafted'?'selected':'';?>>草稿</option>
             <option value="published" <?php echo isset($_GET['status'])&&$_GET['status']=='published'?'selected':'';?>>已发布</option>
-            <option value="trashed" <?php echo isset($_GET['status'])&&$_GET['status']=='trashed'?'selected':'';?>回收站</option>
+            <option value="trashed" <?php echo isset($_GET['status'])&&$_GET['status']=='trashed'?'selected':'';?>>回收站</option>
           </select>
           <button class="btn btn-default btn-sm">筛选</button>
         </form>
@@ -150,7 +150,7 @@
              <td class="text-center"><?php echo convert_status($item['status']);?></td>
              <td class="text-center">
                <a href="javascript:;" class="btn btn-default btn-xs">编辑</a>
-               <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+               <a href="posts_delete.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-xs">删除</a>
              </td>
            </tr>
 
