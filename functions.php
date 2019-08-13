@@ -93,3 +93,18 @@ function bx_execute($sql){
  mysqli_close($conn);
  return $affected_rows;
 }
+/**
+*分页
+**/
+function bx_get_pages($total_page,$page,$size,$visables){
+  //处理分页页码
+  $region=floor($visables/2);
+  $begin=$page-$region;
+  $begin=$begin<1?1:$begin;
+  $end=$begin+$visables-1;
+  $end=$end>$total_page?$total_page:$end;
+  $begin=$end-$visables+1;
+  $begin=$begin<1?1:$begin;
+  $arr=array($begin,$end);
+  return $arr;
+}

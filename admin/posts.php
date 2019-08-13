@@ -2,41 +2,51 @@
   require_once '../functions.php';
   //获取当前用户登录信息
   $current_user=bx_get_current_user();
+
+    //接收筛选参数
+    $where='1=1';
+    $search='';
+    if(isset($_GET['category'])&&$_GET['category']!=='all'){
+    $where.=' and posts.category_id='.$_GET['category'];
+    $search.='&category='.$_GET['category'];
+    }
+  if(isset($_GET['status'])&&$_GET['status']!=='all'){
+    $where.=" and posts.status='{$_GET['status']}'";
+    $search.='&status='.$_GET['status'];
+    }
+
   //页码查询
   $size=20;
   $total_count=bx_fetch_one("select count(1) as count
                 from posts
                 inner join users on posts.user_id=users.id
                 inner join categories on posts.category_id=categories.id
+                where {$where}
                 ")['count'];
   $total_page=ceil($total_count/$size);
-  var_dump($total_page);
   $page=empty($_GET['page'])?1:(int)$_GET['page'];
   $page=$page<=0?1:$page;
   $page=$page>=$total_page?$total_page:$page;
-
   //偏移量
   $offset=(int)($page-1)*$size;
-  //处理分页页码
-  //
   $visables=5;
-  $region=floor($visables/2);
-  $begin=$page-$region;
-  $begin=$begin<1?1:$begin;
-  $end=$begin+$visables-1;
-  $end=$end>$total_page?$total_page:$end;
-  $begin=$end-$visables+1;
-  $begin=$begin<1?1:$begin;
-var_dump($begin);
+  //处理分页页码
+  $postsArr=bx_get_pages($total_page,$page,$size,$visables);
+  $begin=$postsArr[0];
+  $end=$postsArr[1];
+
    //posts关联users categories查询
   $posts=bx_fetch_all("select posts.id,posts.title,users.nickname as user_name,categories.name as category_name,posts.created,posts.status
   from posts
   inner join users on posts.user_id=users.id
   inner join categories on posts.category_id=categories.id
+  where {$where}
   order by posts.created desc
-  limit {$offset},{$size};
-  ");
- //var_dump($posts);
+  limit {$offset},{$size}");
+  // var_dump($posts);
+  //查询分类数据
+  $categories=bx_fetch_all("select * from categories");
+ //var_dump($categories);
   //处理数据格式转换
   //状态转换
     function convert_status($status){
@@ -54,12 +64,7 @@ var_dump($begin);
         $timestamp=strtotime($created);
         return date('Y年m月d日<b\r> H:i:s',$timestamp);
     }
-
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -87,34 +92,37 @@ var_dump($begin);
       <div class="page-action">
         <!-- show when multiple checked -->
         <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
-        <form class="form-inline">
-          <select name="" class="form-control input-sm">
-            <option value="">所有分类</option>
-            <option value="">未分类</option>
+        <form class="form-inline" action="<?php echo $_SERVER['PHP_SELF'];?>">
+          <select name="category" class="form-control input-sm">
+            <option value="all" <?php echo isset($_GET['category'])=='all'?'selected':'';?>>所有分类</option>
+            <?php foreach($categories as $item):?>
+            <option value="<?php echo $item['id']?>" <?php echo isset($_GET['category'])&&$_GET['category']==$item['id']?'selected':'';?>><?php echo $item['name'];?></option>
+            <?php endforeach;?>
           </select>
-          <select name="" class="form-control input-sm">
-            <option value="">所有状态</option>
-            <option value="">草稿</option>
-            <option value="">已发布</option>
+          <select name="status" class="form-control input-sm">
+            <option value="all" <?php echo isset($_GET['status'])&&$_GET['status']=='all'?'selected':'';?>>所有状态</option>
+            <option value="drafted" <?php echo isset($_GET['status'])&&$_GET['status']=='drafted'?'selected':'';?>>草稿</option>
+            <option value="published" <?php echo isset($_GET['status'])&&$_GET['status']=='published'?'selected':'';?>>已发布</option>
+            <option value="trashed" <?php echo isset($_GET['status'])&&$_GET['status']=='trashed'?'selected':'';?>回收站</option>
           </select>
           <button class="btn btn-default btn-sm">筛选</button>
         </form>
         <ul class="pagination pagination-sm pull-right">
         <?php if($page-1>0):?>
-        <li><a href="?page=<?php echo $page-1;?>">&laquo;上一页</a></li>
+        <li><a href="?page=<?php echo ($page-1).$search;?>">&laquo;上一页</a></li>
         <?php endif;?>
 
         <?php if($begin>1):?>
-        <li><a href="?page=<?php echo $begin-1;?>">&hellip;</a></li>
+        <li><a href="?page=<?php echo ($begin-1).$search;?>">&hellip;</a></li>
         <?php endif;?>
         <?php for($i=$begin;$i<=$end;$i++):?>
-            <li <?php echo $i==$page?'class="active"':'';?>><a href="?page=<?php echo $i?>"><?php echo $i;?></a></li>
+            <li <?php echo $i==$page?'class="active"':'';?>><a href="?page=<?php echo $i.$search?>"><?php echo $i;?></a></li>
         <?php endfor;?>
              <?php if($end<$total_page):?>
-                <li><a href="?page=<?php echo $end+1;?>">&hellip;</a></li>
+                <li><a href="?page=<?php echo ($end+1).$search;?>">&hellip;</a></li>
                 <?php endif;?>
         <?php if($page<$total_page):?>
-        <li><a href="?page=<?php echo $page+1;?>">下一页&raquo;</a></li>
+        <li><a href="?page=<?php echo ($page+1).$search;?>">下一页&raquo;</a></li>
         <?php endif;?>
 
         </ul>
