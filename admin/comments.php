@@ -156,7 +156,8 @@
   <script src="../static/assets/vendors/twbs-pagination/jquery.twbsPagination.js"></script>
   <script id="comments_tmpl" type="text/x-jsrender">
    {{for comments}}
-   <tr {{if status=="held"}} class="warning"{{else status=="rejected"}} class="danger" {{else status=="approved"}} class="success" {{/if}}  >
+   <tr {{if status=="held"}} class="warning"{{else status=="rejected"}} class="danger" {{else status=="approved"}} class="success" {{/if}}
+    data-id={{:id}}>
                <td class="text-center"><input type="checkbox"></td>
                <td>{{:author}}</td>
                <td>{{:content}}</td>
@@ -167,14 +168,12 @@
                {{if status=="held"}}
                 <a href="post-add.php" class="btn btn-info btn-xs">批准</a>
                  <a href="post-add.php" class="btn btn-warning btn-xs">驳回</a>
-                  <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
                   {{else status=="rejected"}}
                                   <a href="post-add.php" class="btn btn-info btn-xs">批准</a>
                                    <a href="post-add.php" class="btn btn-warning btn-xs">驳回</a>
-                                    <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                {{else}}
-                <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-                {{/if}}
+               {{/if}}
+                <a href="javascript:;" class="btn btn-danger btn-xs btn-delete">删除</a>
+
                </td>
              </tr>
    {{/for}}
@@ -189,30 +188,58 @@
         .ajaxStop(function () {
         NProgress.done()
        })
+       let current_page=1;
+       function loadPageData(page){
+         //$('tbody').fadeOut();
+         $('.lds-default').fadeIn();
+          $.get('api/comments.php',{page:page},function(res){
+          if(page>res.total_pages){
+          loadPageData(res.total_pages);
+          return false;
+          }
+          $('.pagination').twbsPagination('destroy')
+          $('.pagination').twbsPagination({
+                         first:'&laquo;',
+                         last:'&raquo;',
+                         prev:'&lt;',
+                         next:'&gt;',
+                         startPage:page,
+                          totalPages:res.total_pages,
+                          visablePages:5,
+                          initiateStartPageClick:false,
+                          onPageClick:function(e,page){
+                         loadPageData(page);
+                          }
+                       })
+                 let html=$('#comments_tmpl').render({comments:res.comments});
+                  $('.lds-default').fadeOut();
+                 $('tbody').html(html)//.fadeIn();
+                    current_page=page;
+            })
 
-   function loadPageData(page){
-     //$('tbody').fadeOut();
-     $('.lds-default').fadeIn();
-      $.get('api/comments.php',{page:page},function(res){
-              $('.pagination').twbsPagination({
-                     first:'&laquo;',
-                     last:'&raquo;',
-                     prev:'&lt;',
-                     next:'&gt;',
-                      totalPages:res.total_pages,
-                      visablePages:5,
-                      initiateStartPageClick:false,
-                      onPageClick:function(e,page){
-                     loadPageData(page);
-                      }
-                   })
-             let html=$('#comments_tmpl').render({comments:res.comments});
-              $('.lds-default').fadeOut();
-             $('tbody').html(html)//.fadeIn();
+       }
+        $('.pagination').twbsPagination({
+                                first:'&laquo;',
+                                last:'&raquo;',
+                                prev:'&lt;',
+                                next:'&gt;',
+                                 totalPages:100,
+                                 visablePages:5,
+                                 initiateStartPageClick:false,
+                                 onPageClick:function(e,page){
+                                loadPageData(page);
+                                 }
+                              })
+       loadPageData(current_page);
+       $('tbody').on('click','.btn-delete',function(){
+         let id=$(this).parent().parent().data('id');
+         let that=$(this);
+         $.get('api/comments_delete.php',{id:id},function(res){
+         if(!res) return;
+         loadPageData(current_page);
+         that.parent().parent().remove();
          })
-
-   }
-   loadPageData(1);
+       })
    })
   </script>
   <script>NProgress.done()</script>
