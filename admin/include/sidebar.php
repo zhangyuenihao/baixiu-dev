@@ -5,9 +5,7 @@
     <title>侧边栏</title>
 </head>
 <body>
-<!--<?php echo $_SERVER['PHP_SELF'];?> 输出/baixiu-dev/admin/index.php可以使用文件路径来代替$current_page-->
 <?php
-
 //require require_once include_once include相当于直接把文件放到使用的目录
 require_once '../functions.php';
 $current_page=isset($current_page)?$current_page:'';
@@ -16,7 +14,7 @@ $current_user=bx_get_current_user();
 ?>
 <div class="aside">
     <div class="profile">
-        <!---->
+       <!--<?php echo $_SERVER['PHP_SELF'];?> 输出/baixiu-dev/admin/index.php可以使用文件路径来代替$current_page-->
         <img class="avatar" src=<?php echo isset($current_user['avatar'])?'..'.$current_user['avatar']:'../static/assets/img/default.png';?>>
         <h3 class="name"><?php echo $current_user['nickname'];?></h3>
     </div>

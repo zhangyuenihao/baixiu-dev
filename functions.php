@@ -1,7 +1,7 @@
 <?php
 //为了避免乱码charset=utf-8
 header('content-type: text/html; charset=utf-8');
- require_once '../config.php';
+ require_once '/config.php';
 
  /**
  *封装公共函数
@@ -35,6 +35,7 @@ function bx_fetch_all($sql){
   return false;
  }
  //获取数据
+ $result=[];
  while($row=mysqli_fetch_assoc($query)){
  $result[]=$row;
  }
