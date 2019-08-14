@@ -1,3 +1,6 @@
+<?php
+require_once '../functions.php';
+?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -10,7 +13,6 @@
   <script src="../static/assets/vendors/nprogress/nprogress.js"></script>
 </head>
 <body>
-<?php include 'include/loginstatus.php'?>
   <script>NProgress.start()</script>
 
   <div class="main">
@@ -75,6 +77,28 @@
 
   <script src="../static/assets/vendors/jquery/jquery.js"></script>
   <script src="../static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script>
+  $('#avatar').on('change',function(){
+  //console.dir($(this))
+  //判断是否选中了文件
+    let $this=$(this);
+    let files=$this.prop('files');
+    if(!files.length) return;
+    let file=files[0];
+    //formdata是html5新特性，专门配合ajax 用于客户端和服务器端之间传递二进制数据
+    let data=new FormData();
+    data.append('avatar',file);
+    let xhr=new XMLHttpRequest();
+    xhr.open('POST','api/upload.php')
+    xhr.send(data);
+    xhr.onload=function(){
+    //console.log(this.responseText)
+    $this.siblings('img').attr('src',this.responseText)
+    }
+  })
+
+
+  </script>
   <script>NProgress.done()</script>
 </body>
 </html>
